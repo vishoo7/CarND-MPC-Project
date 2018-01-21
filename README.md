@@ -2,7 +2,7 @@
 
 Self-Driving Car Engineer Nanodegree Program
 
-In this project I'll implement Model Predictive Control to drive the car around the track, similar to previous projects. This time, however, I'm not given the cross track error. I'll have to calculate that myself! Additionally, there's a 100 millisecond latency between actuations commands on top of the connection latency.
+In this project I'll implement Model Predictive Control to drive the car around the track, similar to in previous projects. This time, however, I'm not given the cross track error. I'll have to calculate that myself. Additionally, there's a 100 millisecond latency between actuations commands on top of the connection latency.
 
 ---
 
@@ -57,7 +57,7 @@ The variables above represent the vehicle's x and y coordinates, orientation ang
 
 * Student discusses the reasoning behind the chosen N (timestep length) and dt (elapsed duration between timesteps) values. Additionally the student details the previous values tried.
 
-N is the number of timesteps in the horizon. dt is how much time elapses between actuations. For example, if N were 20 and dt were 0.5, then T would be 10 seconds. N=10 and dt = .1 were originally suggestions from the SDC Slack channel. When playing with these values the dt value being higher would inhibit responsiveness. The model slowed down when N was too large.
+N is the number of timesteps in the horizon. dt is how much time elapses between actuations. For example, if N were 20 and dt were 0.5, then T would be 10 seconds. N = 10 and dt = .1 were originally suggestions I discovered from the SDC Slack channel. When playing with these values the dt value being higher would inhibit responsiveness. The model slowed down when N was too large.
 
 * A polynomial is fitted to waypoints. If the student preprocesses waypoints, the vehicle state, and/or actuators prior to the MPC procedure it is described.
 
@@ -83,3 +83,5 @@ From these transformed coordinates the polyfit() function is used to calculate a
 * The student implements Model Predictive Control that handles a 100 millisecond latency. Student provides details on how they deal with latency.
 
 Before accounting for latency the vehicle immediately veered off the road in the simulations. For latency I predicted values using the previously mentioned model starting from the current state and dt = .1. The resulting state from the prediction was the new initial state for MPC.
+
+Playing around with the weights on lines 49-56 played a huge role in successfully rounding the entire track. When I added acceleration multiplied with steering angle as an additional cost that penalized sharp movements dramatically. Additionally, setting a reference velocity (line 46) large enough prevented the vehicle from coming to a complete hault.
