@@ -63,8 +63,7 @@ N is the number of timesteps in the horizon. dt is how much time elapses between
 
 The waypoint coordinates are preprocessed using vector transformation equations in order to be in vehicle coordinates:
 
-  `
-  
+`  
   for (int i = 0; i < ptsx.size(); i++) {
       double shift_x = ptsx[i] - px;
       double shift_y = ptsy[i] - py;
@@ -72,16 +71,15 @@ The waypoint coordinates are preprocessed using vector transformation equations 
       ptsx[i] = (shift_x * cos(-psi) - shift_y * sin(-psi));
       ptsy[i] = (shift_x * sin(-psi) + shift_y * cos(-psi));
   }
-  
-  `
+`
   
 From these transformed coordinates the polyfit() function is used to calculate a forth-degree polynomial line, drawing the yellow line denoting the path the vehicle should ideally follow. Because we are now calculating from the perspective of the vehicle the x, y and psi are now zero'd out, simplifying the following calculation taken from the quiz
 
- `
+`
   double cte = polyeval(coeffs, x) - y;
   
   double epsi = psi - atan(coeffs[1]); 
-  `
+`
 
 * The student implements Model Predictive Control that handles a 100 millisecond latency. Student provides details on how they deal with latency.
 
