@@ -1,7 +1,13 @@
 # CarND-Controls-MPC
+
 Self-Driving Car Engineer Nanodegree Program
 
+In this project I'll implement Model Predictive Control to drive the car around the track, similar to previous projects. This time, however, I'm not given the cross track error. I'll have to calculate that myself! Additionally, there's a 100 millisecond latency between actuations commands on top of the connection latency.
+
 ---
+
+[image1]: ./model_equations.png "Model Equations"
+
 
 ## Dependencies
 
@@ -37,3 +43,43 @@ Self-Driving Car Engineer Nanodegree Program
 2. Make a build directory: `mkdir build && cd build`
 3. Compile: `cmake .. && make`
 4. Run it: `./mpc`.
+
+
+## Rubric talking points
+
+* Student describes their model in detail. This includes the state, actuators and update equations.
+
+Here is the model that I used:
+
+![alt text][image1]
+
+The variables above represent the vehicle's x and y coordinates, orientation angle, velocity, cross-track error, and psi error, respectively. dt is how much time elapses between actuations. The outputs are acceleration and steering angle.
+
+* Student discusses the reasoning behind the chosen N (timestep length) and dt (elapsed duration between timesteps) values. Additionally the student details the previous values tried.
+
+N is the number of timesteps in the horizon. dt is how much time elapses between actuations. For example, if N were 20 and dt were 0.5, then T would be 10 seconds. N=10 and dt = .1 were originally suggestions from the SDC Slack channel. When playing with these values the dt value being higher would inhibit responsiveness. The model slowed down when N was too large.
+
+* A polynomial is fitted to waypoints. If the student preprocesses waypoints, the vehicle state, and/or actuators prior to the MPC procedure it is described.
+
+The waypoint coordinates are preprocessed using vector transformation equations in order to be in vehicle coordinates:
+
+  `
+  for (int i = 0; i < ptsx.size(); i++) {
+      double shift_x = ptsx[i] - px;
+      double shift_y = ptsy[i] - py;
+
+      ptsx[i] = (shift_x * cos(-psi) - shift_y * sin(-psi));
+      ptsy[i] = (shift_x * sin(-psi) + shift_y * cos(-psi));
+  }
+  `
+  
+From these transformed coordinates the polyfit() function is used to calculate a forth-degree polynomial line, drawing the yellow line denoting the path the vehicle should ideally follow. Because we are now calculating from the perspective of the vehicle the x, y and psi are now zero'd out, simplifying the following calculation taken from the quiz
+
+ `
+  double cte = polyeval(coeffs, x) - y;
+  double epsi = psi - atan(coeffs[1]); 
+  `
+
+* The student implements Model Predictive Control that handles a 100 millisecond latency. Student provides details on how they deal with latency.
+
+Before accounting for latency the vehicle immediately veered off the road in the simulations. For latency I predicted values using the previously mentioned model starting from the current state and dt = .1. The resulting state from the prediction was the new initial state for MPC.
