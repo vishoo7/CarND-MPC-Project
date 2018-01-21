@@ -47,6 +47,8 @@ In this project I'll implement Model Predictive Control to drive the car around 
 
 ## Rubric talking points
 
+Note: The lecture videos, the lecture quiz and the QA videos heavily influenced my work.
+
 * Student describes their model in detail. This includes the state, actuators and update equations.
 
 Here is the model that I used:
